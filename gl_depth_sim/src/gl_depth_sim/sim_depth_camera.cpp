@@ -29,15 +29,28 @@ const static std::string frag_shader_source =
 static Eigen::Matrix4d createProjectionMatrix(const gl_depth_sim::CameraProperties& camera)
 {
   Eigen::Matrix4d m (Eigen::Matrix4d::Identity());
+
   // Organized by column
-  m(0,0) = 2.0 * camera.fx / camera.width;
-  m(1,1) = 2.0 * camera.fy/ camera.height;
-  m(0,2) = 1.0 - 2.0 * camera.cx / camera.width;
-  m(1,2) = 2.0 * camera.cy / camera.height - 1.0;
-  m(2,2) = camera.z_near / (camera.z_far - camera.z_near);
-  m(3,2) = -1.0;
-  m(2,3) = camera.z_far * camera.z_near / (camera.z_far - camera.z_near);
-  m(3,3) = 0.0;
+  if(camera.projection == gl_depth_sim::CameraProperties::Perspective)
+  {
+    m(0,0) = 2.0 * camera.fx / camera.width;
+    m(1,1) = 2.0 * camera.fy / camera.height;
+    m(0,2) = 1.0 - 2.0 * camera.cx / camera.width;
+    m(1,2) = 2.0 * camera.cy / camera.height - 1.0;
+    m(2,2) = camera.z_near / (camera.z_far - camera.z_near);
+    m(3,2) = -1.0;
+    m(2,3) = camera.z_far * camera.z_near / (camera.z_far - camera.z_near);
+    m(3,3) = 0.0;
+  }
+  else
+  {
+    m(0,0) = 2.0 / (camera.right - camera.left);
+    m(1,1) = 2.0 / (camera.top - camera.bottom);
+    m(2,2) = -2.0 / (camera.z_far - camera.z_near);
+    m(3,0) = -(camera.right + camera.left) / (camera.right - camera.left);
+    m(3,1) = -(camera.top + camera.bottom) / (camera.top - camera.bottom);
+    m(3,2) = -(camera.z_far + camera.z_near) / (camera.z_far - camera.z_near);
+  }
 
   return m;
 }
