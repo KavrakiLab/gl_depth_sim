@@ -12,8 +12,8 @@ find_package(PCL REQUIRED common io)
 find_package(OpenCV REQUIRED)
 SET(OpenGL_GL_PREFERENCE "GLVND")
 
-find_package(Threads REQUIRED)
-set(THREADS_PREFER_PTHREAD_FLAG ON)
+#find_package(Threads REQUIRED)
+#set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 # Extensions
 find_package(assimp REQUIRED) # Just used for loading models in mesh_loader.h
@@ -40,14 +40,13 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${ASSIMP_LIBRARIES}
   glad
   dl
-  Threads::Threads
   Eigen3::Eigen
   )
 
 # Libaries for interfacing with opencv and pcl
 add_library(${PROJECT_NAME}_interfaces SHARED
-  src/interfaces/pcl_interface.cpp
-  src/interfaces/opencv_interface.cpp)
+  src/interfaces/pcl_interface.cpp)
+
 target_include_directories(${PROJECT_NAME} PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>")
@@ -72,26 +71,6 @@ target_link_libraries(${PROJECT_NAME}_laser_scanner PUBLIC
   ${PROJECT_NAME}_interfaces
 )
 
-# Example showing basic usage
-add_executable(${PROJECT_NAME}_test src/usage_example.cpp)
-set_target_properties(${PROJECT_NAME}_test PROPERTIES OUTPUT_NAME depth_example PREFIX "")
-target_include_directories(${PROJECT_NAME}_test PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCEDIR}/include>"
-    "$<INSTALL_INTERFACE:include>")
-target_link_libraries(${PROJECT_NAME}_test PUBLIC
-  ${PROJECT_NAME}
-  ${PROJECT_NAME}_interfaces)
-
-# Example showing an orbiting camera
-add_executable(${PROJECT_NAME}_orbit src/camera_orbit_example.cpp)
-set_target_properties(${PROJECT_NAME}_orbit PROPERTIES OUTPUT_NAME orbit_example PREFIX "")
-target_include_directories(${PROJECT_NAME}_orbit PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>")
-target_link_libraries(${PROJECT_NAME}_orbit PUBLIC
-  ${PROJECT_NAME}
-  ${PROJECT_NAME}_interfaces)
-
 install(DIRECTORY include/${PROJECT_NAME}
   DESTINATION include)
 
@@ -100,8 +79,6 @@ install(TARGETS
   ${PROJECT_NAME}
   ${PROJECT_NAME}_interfaces
   ${PROJECT_NAME}_laser_scanner
-  ${PROJECT_NAME}_test
-  ${PROJECT_NAME}_orbit
         EXPORT ${PROJECT_NAME}-targets
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
