@@ -45,7 +45,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
 # Libaries for interfacing with opencv and pcl
 add_library(${PROJECT_NAME}_interfaces SHARED
-  src/interfaces/pcl_interface.cpp)
+  src/interfaces/pcl_interface.cpp 
+  src/interfaces/opencv_interface.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
