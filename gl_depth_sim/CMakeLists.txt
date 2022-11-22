@@ -10,7 +10,7 @@ find_package(Eigen3 REQUIRED)
 find_package(PCL REQUIRED common io)
 
 find_package(OpenCV REQUIRED)
-SET(OpenGL_GL_PREFERENCE "GLVND")
+SET(OpenGL_GL_PREFERENCE LEGACY)
 
 #find_package(Threads REQUIRED)
 #set(THREADS_PREFER_PTHREAD_FLAG ON)
